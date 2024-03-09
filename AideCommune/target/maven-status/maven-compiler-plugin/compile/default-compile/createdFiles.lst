@@ -1,0 +1,14 @@
+com\tp\aidecommune\entity\Utilisateur$Role.class
+com\tp\aidecommune\entity\Affectationincident.class
+com\tp\aidecommune\controller\CitoyenController.class
+com\tp\aidecommune\JakartaRestConfiguration.class
+com\tp\aidecommune\resources\JakartaEE10Resource.class
+com\tp\aidecommune\service\UtilisateurServiceImpl.class
+com\tp\aidecommune\entity\Ressourcemunicipale.class
+com\tp\aidecommune\config\SecurityConfig.class
+com\tp\aidecommune\service\UtilisateurService.class
+com\tp\aidecommune\entity\Utilisateur.class
+com\tp\aidecommune\entity\Equipemaintenance.class
+com\tp\aidecommune\repository\UtilisateurRepository.class
+com\tp\aidecommune\entity\Demandecitoyenne.class
+com\tp\aidecommune\entity\Incidentsignale.class

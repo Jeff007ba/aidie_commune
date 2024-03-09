@@ -1,0 +1,60 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- Configuration du balayage automatique des composants -->
+    <context:component-scan base-package="com.tp.aidecommune"/>
+
+    <!-- Configuration de la source de données -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/aide_commune"/>
+        <property name="username" value="root"/>
+        <property name="password" value=""/>
+    </bean>
+
+    <!-- Configuration de la session Hibernate -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.tp.aidecommune.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Configuration de la gestion des transactions -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <tx:annotation-driven/>
+
+    <!-- Configuration de Spring Security -->
+<security:http auto-config="true">
+    <security:intercept-url pattern="/demandes/**" access="hasAnyRole('CITIZEN', 'MUNICIPAL_AGENT', 'ADMINISTRATOR')"/>
+    <security:intercept-url pattern="/incidents/**" access="hasAnyRole('CITIZEN', 'MUNICIPAL_AGENT', 'ADMINISTRATOR')"/>
+    <security:intercept-url pattern="/profil/**" access="hasAnyRole('CITIZEN', 'MUNICIPAL_AGENT', 'ADMINISTRATOR')"/>
+    <security:intercept-url pattern="/**" access="permitAll"/>
+    <security:form-login login-page="/login" default-target-url="/demandes"/>
+    <security:logout logout-success-url="/login" />
+</security:http>
+
+<security:authentication-manager>
+    <security:authentication-provider>
+        <security:user-service>
+            <security:user name="citoyen" password="{noop}password" authorities="ROLE_CITIZEN"/>
+            <security:user name="agent" password="{noop}password" authorities="ROLE_MUNICIPAL_AGENT"/>
+            <security:user name="admin" password="{noop}password" authorities="ROLE_ADMINISTRATOR"/>
+        </security:user-service>
+    </security:authentication-provider>
+</security:authentication-manager>
+</beans>
